@@ -1,7 +1,7 @@
 #include "EquationSolver.hpp"
 
 EquationSolver::EquationSolver(const std::string& equation)
-    : equation(equation), coefficient(0), exponent(0), isNegativeCoefficient(false),
+    : equation(equation), coefficient(0), exponent(0),
       hasCoefficient(false), hasDecimal(false), decimalMultiplier(0.1),
       isRightSide(false), NextCoefficient('+') {}
 
@@ -9,15 +9,15 @@ std::vector<EquationSolver::Term> EquationSolver::ParseInput() {
     for (int i = 0; equation[i]; i++) {
         if (equation[i]) {
             char ch = equation[i];
-// std::cout << "Error: Unknown Character: " << i << std::endl;
-// std::cout<< "In ParseInput: ch: " << ch << std::endl;
             if (isEqualsSign(ch)) {
                 processEqualsSign(parsedTerms);
                 isRightSide = true;
             } else if (isOperator(ch)) {
                 processOperator(parsedTerms, ch);
             } else if (isVariable(ch)) {
-                processVariable(equation, i);
+                i = processVariable(equation, i);
+                if (exponent == 1)
+                    addTermToList(parsedTerms);
             } else if (isExponentIndicator(ch)) {
                 i = processExponentIndicator(equation, i);
                 if (rewind(equation[i]))
@@ -52,15 +52,79 @@ int EquationSolver::GetDegree() const {
     return (degree);
 }
 
-std::vector<EquationSolver::Term> EquationSolver::ReduceTerms(const std::vector<Term>& parsedTerms) {
+void EquationSolver::WriteEquation(const std::vector<Term>& terms) {
+    bool isFirstTerm = true;
+    int i = 0;
+
+    for (const auto& term : terms) {
+        if (!term.isRightSideReduced) {
+            if (!isFirstTerm || term.coefficient < 0) {
+                if (term.coefficient >= 0) {
+                    std::cout << " + ";
+                } else {
+                    if (!isFirstTerm)
+                        std::cout << " - ";
+                    else
+                        std::cout << "-";
+                }
+            }
+            std::cout << std::abs(term.coefficient);
+            if (term.exponent > 0) {
+                std::cout << " * X^" << term.exponent;
+            }
+            isFirstTerm = false;
+        }
+        i++;
+    }
+    if (i == 0)
+        std::cout << "0";
+    i = 0;
+    std::cout << " = ";
+    isFirstTerm = true;
+    for (const auto& term : terms) {
+        if (term.isRightSideReduced) {
+            if (!isFirstTerm || term.coefficient < 0) {
+                if (term.coefficient >= 0) {
+                    std::cout << " + ";
+                } else {
+                    if (!isFirstTerm)
+                        std::cout << " - ";
+                    else
+                        std::cout << "-";
+                }
+            }
+            std::cout << std::abs(term.coefficient);
+            if (term.exponent > 0) {
+                std::cout << " * X^" << term.exponent;
+            }
+            isFirstTerm = false;
+            i++;
+        }
+    }
+    if (i == 0)
+        std::cout << "0";
+    std::cout << std::endl;
+}
+
+bool EquationSolver::isThereRight(std::vector<Term>& parsedTerms) {
+    for (const auto& term : parsedTerms) {
+            if (term.isRightSideReduced) {
+                return (true);
+            }
+        }
+
+    return (false);
+}
+
+std::vector<EquationSolver::Term> EquationSolver::ReduceVector(const std::vector<Term>& parsedTerms) {
     std::vector<Term> reducedTerms;
 
     for (const Term& term : parsedTerms) {
         bool found = false;
-
         for (Term& reducedTerm : reducedTerms) {
-            if (reducedTerm.exponent == term.exponent) {
+            if (reducedTerm.exponent == term.exponent && reducedTerm.isRightSideReduced == term.isRightSideReduced) {
                 reducedTerm.coefficient += term.coefficient;
+                reducedTerm.isRightSideReduced = term.isRightSideReduced;
                 found = true;
                 break;
             }
@@ -68,20 +132,61 @@ std::vector<EquationSolver::Term> EquationSolver::ReduceTerms(const std::vector<
         if (!found)
             reducedTerms.push_back(term);
     }
+    reducedTerms.erase(std::remove_if(reducedTerms.begin(), reducedTerms.end(),
+        [](const Term& term) { return term.coefficient == 0; }),
+        reducedTerms.end());
 
     return (reducedTerms);
 }
 
+std::vector<EquationSolver::Term> EquationSolver::ReduceTerms(std::vector<Term>& parsedTerms) {
+    std::vector<Term> updatedTerms;
+
+    for (const auto& term : parsedTerms) {;
+        if (!term.isRightSideReduced)
+            updatedTerms.push_back(term);
+    }
+    for (const auto& term : parsedTerms) {
+        if (term.isRightSideReduced)
+            updatedTerms.push_back(term);
+    }
+    std::cout << "Equation: ";
+    WriteEquation(updatedTerms);
+    std::cout << std::endl;
+    while (isThereRight(parsedTerms)) {
+        for (const auto& term : parsedTerms) {
+            if (term.isRightSideReduced) {
+            updatedTerms.push_back({-term.coefficient, term.exponent, false});
+            updatedTerms.push_back({-term.coefficient, term.exponent, true});
+            #if STEPS
+                std::cout << "Equation Reduced Intermediaire Step: ";
+                WriteEquation(updatedTerms);
+                std::cout << std::endl;
+            #endif
+            updatedTerms = ReduceVector(updatedTerms);
+            #if STEPS
+                std::cout << "Equation Reduced Intermediaire Step: ";
+                WriteEquation(updatedTerms);
+                std::cout << std::endl;
+            #endif
+            }
+        }
+        parsedTerms = updatedTerms;
+    }
+    parsedTerms = ReduceVector(parsedTerms);
+
+    return (parsedTerms);
+}
+
 std::string EquationSolver::WriteReducedEquation(const std::vector<Term>& reducedTerms) {
     std::vector<Term> sortedTerms = reducedTerms;
-    std::sort(sortedTerms.begin(), sortedTerms.end(), [](const Term& a, const Term& b) {
-        return a.exponent < b.exponent;
-    });
-
     std::ostringstream equationStream;
     bool isFirstTerm = true;
     bool allCoefficientsZero = true;
 
+    std::sort(sortedTerms.begin(), sortedTerms.end(), [](const Term& a, const Term& b) {
+        return a.exponent < b.exponent;
+    });
     for (const Term& term : sortedTerms) {
         if (term.coefficient != 0) {
             allCoefficientsZero = false;
@@ -106,6 +211,8 @@ std::string EquationSolver::WriteReducedEquation(const std::vector<Term>& reduce
     }
     if (!allCoefficientsZero)
         equationStream << " = 0";
+    else
+        equationStream << "0 = 0";
 
     return (equationStream.str());
 }
@@ -134,22 +241,24 @@ void EquationSolver::SolveQuadratic(double a, double b, double c) {
     }
 }
 
-std::vector<EquationSolver::Term> EquationSolver::SortTermsByExponent(const std::vector<Term>& terms) {    std::vector<Term> sortedTerms = terms;
+std::vector<EquationSolver::Term> EquationSolver::SortTermsByExponent(const std::vector<Term>& terms) {
+    std::vector<Term> sortedTerms = terms;
 
     std::sort(sortedTerms.begin(), sortedTerms.end(), [](const Term& a, const Term& b) {
-        return a.exponent < b.exponent; // Trie par ordre décroissant des exponents
+        return a.exponent < b.exponent;
     });
 
-    return sortedTerms;
+    return (sortedTerms);
 }
 
 void EquationSolver::SolvePolynomial(const std::vector<EquationSolver::Term>& reducedTerms) {
+    int maxExponent = 0;
+
     if (reducedTerms.empty()) {
         std::cout << "The polynomial is zero everywhere." << std::endl;
         return ;
     }
     std::vector<Term> sortedTerms = SortTermsByExponent(reducedTerms);
-    int maxExponent = 0;
     for (auto it = sortedTerms.begin(); it != sortedTerms.end(); ) {
         if (it->coefficient == 0) {
             it = sortedTerms.erase(it);
@@ -204,96 +313,79 @@ void EquationSolver::SolvePolynomial(const std::vector<EquationSolver::Term>& re
                 std::cout << "The equation has no solution." << std::endl;
         } else {
             double root = -b / a;
+            if (root == -0)
+                root = 0;
             std::cout << "The solution is X = " << root << std::endl;
         }
     }
-    else
+    else {
         std::cout << "The equation is constant, no variable X." << std::endl;
-}
-
-bool EquationSolver::isOperator(char ch) const {
-    return ch == '-' || ch == '+';
-}
-
-bool EquationSolver::isVariable(char ch) const {
-    return ch == 'X' || ch == 'x';
-}
-
-bool EquationSolver::isExponentIndicator(char ch) const {
-    return ch == '^';
-}
-
-bool EquationSolver::isDecimalPoint(char ch) const {
-    return ch == '.';
-}
-
-bool EquationSolver::isEqualsSign(char ch) const {
-    return ch == '=';
+        if (sortedTerms.front().coefficient != 0)
+            std::cout << sortedTerms.front().coefficient << " is not equal to 0, dummy !" << std::endl;
+    }
 }
 
 double EquationSolver::GetCoefficient(const std::vector<EquationSolver::Term>& terms, int exponent) {
     auto it = std::find_if(terms.begin(), terms.end(), [exponent](const EquationSolver::Term& term) {
         return term.exponent == exponent;
     });
-
     if (it != terms.end()) {
-        return it->coefficient;
+        return (it->coefficient);
     } else {
-        return 0.0;
+        return (0.0);
     }
 }
 
 void EquationSolver::addTermToList(std::vector<Term>& parsedTerms) {
-    if (isRightSide) {
-        coefficient *= -1;
-    }
-// std::cout<< "Added Term: Coefficient = " << coefficient << ", Exponent = " << exponent << std::endl;
-    parsedTerms.push_back({coefficient, exponent});
+    bool right = false;
+    if (isRightSide)
+        right = true;
+    parsedTerms.push_back({coefficient, exponent, right});
     resetVariables();
 }
 
-void EquationSolver::resetVariables() {
-    coefficient = 0;
-    exponent = 0;
-    isNegativeCoefficient = false;
-    hasCoefficient = false;
-    hasDecimal = false;
-    decimalMultiplier = 0.1;
-}
-
 void EquationSolver::processEqualsSign(std::vector<Term>& parsedTerms) {
-// std::cout<< "Processing Equals Sign" << std::endl;
-    addTermToList(parsedTerms);
+    if (coefficient != 0)
+        addTermToList(parsedTerms);
 }
 
 void EquationSolver::processOperator(std::vector<Term>& parsedTerms, char ch) {
-// std::cout<< "Processing Operator" << std::endl;
     if (ch == '-')
         NextCoefficient = '-';
-    addTermToList(parsedTerms);
-    isNegativeCoefficient = (equation[equation.find_last_of("+-") - 1] == '-');
+    if (coefficient != 0)
+        addTermToList(parsedTerms);
 }
 
-void EquationSolver::processVariable(const std::string& equation, int i) {
-// std::cout<< "Processing Variable" << std::endl;
-    if (hasCoefficient == false)
+int EquationSolver::processVariable(const std::string& equation, int i) {
+    if (hasCoefficient == false) {
         coefficient = 1;
-    if (NextCoefficient == '-')
-        coefficient *= -1;
-    if (equation[i + 1] != '^')
+        if (NextCoefficient == '-')
+            coefficient *= -1;
+    }
+    if (equation[i + 1] != '^') {
         exponent = 1;
-// std::cout << "Coefficient: " << coefficient << std::endl;
+        if (equation[i + 1] == 'X' || equation[i + 1] == 'x') {
+            i++;
+            while (equation[i] == 'X' || equation[i] == 'x') {
+                exponent++;
+                i++;
+            }
+        }
+    }
     hasCoefficient = true;
     NextCoefficient = '+';
+
+    return (i);
 }
 
 int EquationSolver::processExponentIndicator(const std::string& equation, int i) {
-// std::cout<< "Processing Exponent Indicator" << std::endl;
     i++;
     if (equation[i] == '-') {
         std::cout << "Error: By definition, a polynomial has non-negative integer exponents of variables" << std::endl;
         exit(1);
     }
+    while (isspace(equation[i]))
+        i++;
     if (!std::isdigit(equation[i])) {
         std::cout << "Error: Unknown Exponent Character: " << equation[i] << std::endl;
         exit(4);
@@ -302,29 +394,17 @@ int EquationSolver::processExponentIndicator(const std::string& equation, int i)
         exponent = exponent * 10 + (equation[i] - '0');
         i++;
     }
-// std::cout << "Exponent: " << exponent << std::endl;
     return (i);
 }
 
-bool EquationSolver::canProcess(char c) {
-    if (c == ' ' || c == '*' || c == 'X' || c == '=' || c == 'x' || c == '^')
-        return (false);
-    return (true);
-}
-
 int EquationSolver::processDigit(const std::string& equation, int i) {
-// std::cout<< "Processing Digit: " << equation[i] << std::endl;
-// std::cout<< "Coeff " << coefficient << std::endl;
-// std::cout<< "decimalMultiplier: " << decimalMultiplier << std::endl;
-// std::cout<< "Exponent: " << exponent << std::endl;
     bool isNegatif = false;
 
-    if (equation[i - 1] == '-')
+    if (i != 0 && equation[i - 1] == '-')
         isNegatif = true;
     while (canProcess(equation[i]) && equation[i]) {
         if (equation[i] == '.') {
             i++;
-// std::cout<< "Decimal Found" << std::endl;
             while (canProcess(equation[i]) && equation[i]) {
                 if (equation[i] == '.') {
                     std::cout << "Error: Multiple Decimal Point" << std::endl;
@@ -333,33 +413,18 @@ int EquationSolver::processDigit(const std::string& equation, int i) {
                 coefficient += (equation[i] - '0') * decimalMultiplier;
                 decimalMultiplier *= 0.1;
                 i++;
-// std::cout<< "Coeff Decimal:" << coefficient << std::endl;
             }
             break;
         }
-//  std::cout << "NewCoeff1: " << coefficient << std::endl;
         coefficient = coefficient * 10 + (equation[i] - '0');
-//  std::cout << "NewCoeff2: " << coefficient << std::endl;
-// std::cout<< "I1: " << i << std::endl;
         i++;
-// std::cout<< "2I: " << i << std::endl;
     }
-
     if (isNegatif)
         coefficient *= -1;
-
     if (NextCoefficient == '-')
         coefficient *= -1;
-
     NextCoefficient = '+';
-// std::cout<< "Processing Digit2: " << equation[i] << std::endl;
     hasCoefficient = true;
-    return (i);
-}
 
-bool EquationSolver::rewind(char c) const
-{
-    if (c == '=' || c == 'x' || c == 'X' || c == '+' || c == '-' || c == '^')
-        return (true);
-    return (false);
+    return (i);
 }
