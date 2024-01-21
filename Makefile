@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -Werror
 
 NAME = computorv1
-SRC = main.cpp EquationSolver.cpp utils.cpp
+SRC = main.cpp EquationSolver.cpp utils.cpp process.cpp
 OBJS = $(SRC:.cpp=.o)
 
 all: $(NAME)

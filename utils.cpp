@@ -40,3 +40,44 @@ bool EquationSolver::rewind(char c) const
         return (true);
     return (false);
 }
+
+bool EquationSolver::isThereRight(std::vector<Term>& parsedTerms) {
+    for (const auto& term : parsedTerms) {
+            if (term.isRightSideReduced) {
+                return (true);
+            }
+        }
+
+    return (false);
+}
+
+int EquationSolver::GetDegree() const {
+    int degree = 0;
+
+    for (const Term& term : parsedTerms) {
+        if (term.exponent > degree) {
+            degree = term.exponent;
+        }
+    }
+
+    return (degree);
+}
+
+double EquationSolver::GetCoefficient(const std::vector<EquationSolver::Term>& terms, int exponent) {
+    auto it = std::find_if(terms.begin(), terms.end(), [exponent](const EquationSolver::Term& term) {
+        return term.exponent == exponent;
+    });
+    if (it != terms.end()) {
+        return (it->coefficient);
+    } else {
+        return (0.0);
+    }
+}
+
+void EquationSolver::addTermToList(std::vector<Term>& parsedTerms) {
+    bool right = false;
+    if (isRightSide)
+        right = true;
+    parsedTerms.push_back({coefficient, exponent, right});
+    resetVariables();
+}
