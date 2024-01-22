@@ -172,7 +172,9 @@ std::string EquationSolver::WriteReducedEquation(const std::vector<Term>& reduce
                 if (!isFirstTerm)
                     equationStream << " + ";
             } else {
-                equationStream << " - ";
+                if (!isFirstTerm)
+                    equationStream << " ";
+                equationStream << "- ";
             }
             double absCoefficient = std::abs(term.coefficient);
             if (absCoefficient != 1 || term.exponent == 0) {
