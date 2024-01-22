@@ -31,21 +31,13 @@ public:
 
     std::vector<Term> ParseInput();
 
-
     static std::vector<Term> ReduceTerms(std::vector<Term>& parsedTerms);
 
     static std::string WriteReducedEquation(const std::vector<Term>& reducedTerms);
 
-
     static void SolvePolynomial(const std::vector<EquationSolver::Term>& reducedTerms);
 
-    
-
-
-
-
 private:
-
     std::vector<Term> parsedTerms;
     std::string equation;
     double coefficient;
@@ -56,35 +48,16 @@ private:
     bool isRightSide;
     char NextCoefficient;
 
-    int GetDegree() const;
-
-    bool isOperator(char ch) const;
-
-    bool isVariable(char ch) const;
-
-    bool isExponentIndicator(char ch) const;
-
-    static void SolveQuadratic(double a, double b, double c);
-
-    bool isDecimalPoint(char ch) const;
-
-    static std::vector<Term> SortTermsByExponent(const std::vector<Term>& terms);
-
-    bool isEqualsSign(char ch) const;
+    // EquationSolver.cpp //
 
     static void WriteEquation(const std::vector<Term>& terms);
 
-    static bool isThereRight(std::vector<Term>& parsedTerms);
-
-    bool rewind(char c) const;
-
     static std::vector<Term> ReduceVector(const std::vector<Term>& parsedTerms);
 
-    static double GetCoefficient(const std::vector<EquationSolver::Term>& terms, int exponent);
+    static void SolveQuadratic(double a, double b, double c);
+    
 
-    void addTermToList(std::vector<Term>& parsedTerms);
-
-    void resetVariables();
+    // process.cpp //
 
     void processEqualsSign(std::vector<Term>& parsedTerms);
 
@@ -98,11 +71,31 @@ private:
 
     int processDigit(const std::string& equation, int i);
 
-    static int pgcd(int a, int b);
+    // utils.cpp //
 
-    static bool isFractionInteresting(double num);
+    bool isOperator(char ch) const;
 
-    static double printRoot(double root);
+    bool isVariable(char ch) const;
+
+    bool isExponentIndicator(char ch) const;
+
+    bool isDecimalPoint(char ch) const;
+
+    bool isEqualsSign(char ch) const;
+
+    void resetVariables();
+
+    bool rewind(char c) const;
+
+    static bool isThereRight(std::vector<Term>& parsedTerms);
+
+    int GetDegree() const;
+
+    static double GetCoefficient(const std::vector<EquationSolver::Term>& terms, int exponent);
+
+    void addTermToList(std::vector<Term>& parsedTerms);
+
+    static std::vector<Term> SortTermsByExponent(const std::vector<Term>& terms);
 };
 
 #endif // EQUATION_SOLVER_HPP

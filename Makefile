@@ -10,6 +10,10 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	@$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
 	@echo "\033[0;32mCompilation successful! 🚀\033[0m"
+	
+test:
+	@$(CXX) $(CXXFLAGS)  -o test tests.cpp EquationSolver.cpp utils.cpp process.cpp && ./test
+	@echo "\033[0;32mRunning tests... ✔\033[0m"
 
 %.o: %.cpp EquationSolver.hpp
 	@$(CXX) $(CXXFLAGS) -c $<
@@ -25,8 +29,5 @@ fclean: clean
 
 re: fclean all
 
-test:
-	@g++ -o test tests.cpp EquationSolver.cpp && ./test
-	@echo "\033[0;32mRunning tests... ✔\033[0m"
 
 .PHONY: all clean fclean re test

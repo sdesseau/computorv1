@@ -55,6 +55,14 @@ int EquationSolver::processExponentIndicator(const std::string& equation, int i)
 
 int EquationSolver::processDigit(const std::string& equation, int i) {
     bool isNegatif = false;
+    bool oldCoeff = false;
+    double oldCoeffDouble = 0;
+
+    if (coefficient) {
+        oldCoeff = true;
+        oldCoeffDouble = coefficient;
+        coefficient = 0;
+    }
 
     if (i != 0 && equation[i - 1] == '-')
         isNegatif = true;
@@ -84,5 +92,14 @@ int EquationSolver::processDigit(const std::string& equation, int i) {
     NextCoefficient = '+';
     hasCoefficient = true;
 
+
+    if (oldCoeff)
+        coefficient *= oldCoeffDouble;
     return (i);
+}
+
+bool EquationSolver::canProcess(char c) {
+    if (c == ' ' || c == '*' || c == 'X' || c == '=' || c == 'x' || c == '^' || c == '+' || c == '-')
+        return (false);
+    return (true);
 }
