@@ -75,9 +75,7 @@ int EquationSolver::processDigit(const std::string& equation, int i) {
         coefficient = coefficient * 10 + (equation[i] - '0');
         i++;
     }
-    if (isNegatif)
-        coefficient *= -1;
-    if (NextCoefficient == '-')
+    if (isNegatif || NextCoefficient == '-')
         coefficient *= -1;
     NextCoefficient = '+';
     hasCoefficient = true;
