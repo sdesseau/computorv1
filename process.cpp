@@ -66,6 +66,10 @@ int EquationSolver::processDigit(const std::string& equation, int i) {
                     std::cout << "Error: Multiple Decimal Point" << std::endl;
                     exit(2);
                 }
+                else if (!std::isdigit(equation[i])){
+                    std::cout << "Error: Bad Coeff Character: " << equation[i] << std::endl;
+                    exit(4);
+                }
                 coefficient += (equation[i] - '0') * decimalMultiplier;
                 decimalMultiplier *= 0.1;
                 i++;

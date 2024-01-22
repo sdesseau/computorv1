@@ -219,15 +219,6 @@ void EquationSolver::SolveQuadratic(double a, double b, double c) {
     }
 }
 
-std::vector<EquationSolver::Term> EquationSolver::SortTermsByExponent(const std::vector<Term>& terms) {
-    std::vector<Term> sortedTerms = terms;
-
-    std::sort(sortedTerms.begin(), sortedTerms.end(), [](const Term& a, const Term& b) {
-        return a.exponent < b.exponent;
-    });
-
-    return (sortedTerms);
-}
 
 void EquationSolver::SolvePolynomial(const std::vector<EquationSolver::Term>& reducedTerms) {
     int maxExponent = 0;

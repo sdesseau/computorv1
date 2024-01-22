@@ -81,3 +81,51 @@ void EquationSolver::addTermToList(std::vector<Term>& parsedTerms) {
     parsedTerms.push_back({coefficient, exponent, right});
     resetVariables();
 }
+
+std::vector<EquationSolver::Term> EquationSolver::SortTermsByExponent(const std::vector<Term>& terms) {
+    std::vector<Term> sortedTerms = terms;
+
+    std::sort(sortedTerms.begin(), sortedTerms.end(), [](const Term& a, const Term& b) {
+        return a.exponent < b.exponent;
+    });
+
+    return (sortedTerms);
+}
+
+int EquationSolver::pgcd(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+// Fonction pour déterminer si un double peut être représenté comme une fraction
+bool EquationSolver::isFractionInteresting(double num) {
+    const double epsilon = 1e-6; // Marge d'erreur acceptable
+
+    // Vérifier si le nombre est proche d'un entier
+    if (std::fabs(num - std::round(num)) < epsilon) {
+        return true;
+    }
+
+    // Convertir le double en fraction
+    int numerator = static_cast<int>(std::round(num * 1e6)); // Multiplier par 1e6 pour conserver les décimales
+    int denominator = 1e6;
+
+    // Simplifier la fraction en utilisant le PGCD
+    int commonDivisor = pgcd(numerator, denominator);
+    numerator /= commonDivisor;
+    denominator /= commonDivisor;
+
+    // Vérifier si la fraction simplifiée est proche du nombre d'origine
+    return std::fabs(num - static_cast<double>(numerator) / denominator) < epsilon;
+}
+
+// double EquationSolver::printRoot(double root) {
+//     if (isFractionInteresting(root))
+//     {
+
+//     }
+// {
