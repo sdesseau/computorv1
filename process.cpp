@@ -10,6 +10,7 @@ void EquationSolver::processOperator(std::vector<Term>& parsedTerms, char ch) {
         NextCoefficient = '-';
     if (coefficient != 0)
         addTermToList(parsedTerms);
+    resetVariables();
 }
 
 int EquationSolver::processVariable(const std::string& equation, int i) {

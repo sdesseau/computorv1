@@ -203,9 +203,9 @@ void EquationSolver::SolveQuadratic(double a, double b, double c) {
     if (discriminant > 0) {
         double root1 = (-b + std::sqrt(discriminant)) / (2 * a);
         double root2 = (-b - std::sqrt(discriminant)) / (2 * a);
-        std::cout << "Discriminant is positive, two real roots:" << std::endl;
-        std::cout << "Root1: " << root1 << std::endl;
-        std::cout << "Root2: " << root2 << std::endl;
+        std::cout << "Discriminant is strictly positive, the two solutions are:" << std::endl;
+        std::cout << "Root 1: " << root1 << std::endl;
+        std::cout << "Root 2: " << root2 << std::endl;
     } 
     else if (discriminant == 0) {
         double root = -b / (2 * a);
