@@ -9,7 +9,7 @@
 #include <cmath>
 #include <complex>
 
-#define STEPS 0
+#define STEPS 1
 
 class EquationSolver {
 public:
@@ -41,12 +41,12 @@ private:
     std::vector<Term> parsedTerms;
     std::string equation;
     double coefficient;
-    double decimalMultiplier;
+    int exponent;
     bool hasCoefficient;
     bool hasDecimal;
+    double decimalMultiplier;
     bool isRightSide;
     char NextCoefficient;
-    int exponent;
 
     // EquationSolver.cpp //
 
