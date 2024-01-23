@@ -10,22 +10,22 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	@$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
 	@echo "\033[0;32mCompilation successful! 🚀\033[0m"
-	
+
 test:
-	@$(CXX) $(CXXFLAGS)  -o test tests.cpp EquationSolver.cpp utils.cpp process.cpp && ./test
 	@echo "\033[0;32mRunning tests... ✔\033[0m"
+	@$(CXX) $(CXXFLAGS)  -o test tests.cpp EquationSolver.cpp utils.cpp process.cpp && ./test
 
 %.o: %.cpp EquationSolver.hpp
-	@$(CXX) $(CXXFLAGS) -c $<
 	@echo "\033[0;32mCompiling $<... ✔\033[0m"
+	@$(CXX) $(CXXFLAGS) -c $<
 
 clean:
-	@rm -f $(OBJS)
 	@echo "\033[0;33mCleaning object files... ✔\033[0m"
+	@rm -f $(OBJS)
 
 fclean: clean
-	@rm -f $(NAME) test
 	@echo "\033[0;31mCleaning executable... ✔\033[0m"
+	@rm -f $(NAME) test
 
 re: fclean all
 

@@ -10,6 +10,10 @@ std::vector<EquationSolver::Term> EquationSolver::ParseInput() {
         if (equation[i]) {
             char ch = equation[i];
             if (isEqualsSign(ch)) {
+                if (isRightSide == true) {
+                    std::cout << "Error: Must have only one '=' character !" << std::endl;
+                    exit(7);
+                }
                 processEqualsSign(parsedTerms);
                 isRightSide = true;
             } else if (isOperator(ch)) {
@@ -32,6 +36,8 @@ std::vector<EquationSolver::Term> EquationSolver::ParseInput() {
                 std::cout << "Error: Unknown Character: " << ch << std::endl;
                 exit(3);
             }
+            if (!equation[i])
+                break;
         }
     }
     if (coefficient != 0)
@@ -131,6 +137,12 @@ std::vector<EquationSolver::Term> EquationSolver::ReduceTerms(std::vector<Term>&
     std::cout << "Equation: ";
     WriteEquation(updatedTerms);
     std::cout << std::endl;
+    updatedTerms = ReduceVector(updatedTerms);
+    #if STEPS
+        std::cout << "Equation Reduced Intermediaire Step: ";
+        WriteEquation(updatedTerms);
+        std::cout << std::endl;
+    #endif
     while (isThereRight(parsedTerms)) {
         for (const auto& term : parsedTerms) {
             if (term.isRightSideReduced) {

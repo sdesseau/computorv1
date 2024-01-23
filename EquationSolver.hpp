@@ -67,9 +67,11 @@ private:
 
     int processExponentIndicator(const std::string& equation, int i);
 
+    int processDigit(const std::string& equation, int i);
+
     bool canProcess(char c);
 
-    int processDigit(const std::string& equation, int i);
+    bool canProcessExponent(char c);
 
     // utils.cpp //
 

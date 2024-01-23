@@ -3,14 +3,18 @@
 void EquationSolver::processEqualsSign(std::vector<Term>& parsedTerms) {
     if (coefficient != 0)
         addTermToList(parsedTerms);
+    resetVariables();
 }
 
 void EquationSolver::processOperator(std::vector<Term>& parsedTerms, char ch) {
-    if (ch == '-')
-        NextCoefficient = '-';
+    if (ch == '-'){
+        if (NextCoefficient == '+')
+            NextCoefficient = '-';
+        else
+            NextCoefficient = '+';
+    }
     if (coefficient != 0)
         addTermToList(parsedTerms);
-    resetVariables();
 }
 
 int EquationSolver::processVariable(const std::string& equation, int i) {
@@ -31,7 +35,6 @@ int EquationSolver::processVariable(const std::string& equation, int i) {
     }
     hasCoefficient = true;
     NextCoefficient = '+';
-
     return (i);
 }
 
@@ -47,10 +50,19 @@ int EquationSolver::processExponentIndicator(const std::string& equation, int i)
         std::cout << "Error: Unknown Exponent Character: " << equation[i] << std::endl;
         exit(4);
     }
-    while (std::isdigit(equation[i])) {
+    while (equation[i] && std::isdigit(equation[i])) {
         exponent = exponent * 10 + (equation[i] - '0');
         i++;
+        if (equation[i] == '.' || equation[i] == '*') {
+            std::cout << "Error: Sorry, not implemented yet !" << std::endl;
+            exit(5);
+        }
     }
+    if (equation[i] && !canProcessExponent(equation[i])) {
+        std::cout << "Error: Unknown Exponent Character: " << equation[i] << std::endl;
+        exit(6);
+    }
+
     return (i);
 }
 
@@ -64,9 +76,6 @@ int EquationSolver::processDigit(const std::string& equation, int i) {
         oldCoeffDouble = coefficient;
         coefficient = 0;
     }
-
-    if (i != 0 && equation[i - 1] == '-')
-        isNegatif = true;
     while (canProcess(equation[i]) && equation[i]) {
         if (equation[i] == '.') {
             i++;
@@ -101,6 +110,12 @@ int EquationSolver::processDigit(const std::string& equation, int i) {
 
 bool EquationSolver::canProcess(char c) {
     if (c == ' ' || c == '*' || c == 'X' || c == '=' || c == 'x' || c == '^' || c == '+' || c == '-')
+        return (false);
+    return (true);
+}
+
+bool EquationSolver::canProcessExponent(char c) {
+    if (c != ' ' && c != '+' && c != '-' && c != '=')
         return (false);
     return (true);
 }
