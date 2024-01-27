@@ -17,7 +17,6 @@ void EquationSolver::processOperator(std::vector<Term>& parsedTerms, char ch) {
         addTermToList(parsedTerms);
     else
         resetVariables();
-        
 }
 
 int EquationSolver::processVariable(const std::string& equation, int i) {
