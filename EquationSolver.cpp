@@ -53,9 +53,9 @@ void EquationSolver::WriteEquation(const std::vector<Term>& terms) {
     for (const auto& term : terms) {
         if (!term.isRightSideReduced) {
             if (!isFirstTerm || term.coefficient < 0) {
-                if (term.coefficient >= 0)
+                if (term.coefficient >= 0) {
                     std::cout << " + ";
-                else {
+                } else {
                     if (!isFirstTerm)
                         std::cout << " - ";
                     else
@@ -63,8 +63,9 @@ void EquationSolver::WriteEquation(const std::vector<Term>& terms) {
                 }
             }
             std::cout << std::abs(term.coefficient);
-            if (term.exponent > 0)
+            if (term.exponent > 0) {
                 std::cout << " * X^" << term.exponent;
+            }
             isFirstTerm = false;
         }
         i++;
@@ -77,9 +78,9 @@ void EquationSolver::WriteEquation(const std::vector<Term>& terms) {
     for (const auto& term : terms) {
         if (term.isRightSideReduced) {
             if (!isFirstTerm || term.coefficient < 0) {
-                if (term.coefficient >= 0)
+                if (term.coefficient >= 0) {
                     std::cout << " + ";
-                else {
+                } else {
                     if (!isFirstTerm)
                         std::cout << " - ";
                     else
@@ -87,8 +88,9 @@ void EquationSolver::WriteEquation(const std::vector<Term>& terms) {
                 }
             }
             std::cout << std::abs(term.coefficient);
-            if (term.exponent > 0)
+            if (term.exponent > 0) {
                 std::cout << " * X^" << term.exponent;
+            }
             isFirstTerm = false;
             i++;
         }
@@ -124,7 +126,7 @@ std::vector<EquationSolver::Term> EquationSolver::ReduceVector(const std::vector
 std::vector<EquationSolver::Term> EquationSolver::ReduceTerms(std::vector<Term>& parsedTerms) {
     std::vector<Term> updatedTerms;
 
-    for (const auto& term : parsedTerms) {
+    for (const auto& term : parsedTerms) {;
         if (!term.isRightSideReduced)
             updatedTerms.push_back(term);
     }
@@ -192,8 +194,9 @@ std::string EquationSolver::WriteReducedEquation(const std::vector<Term>& reduce
             }
             if (term.exponent > 0) {
                 equationStream << "X";
-                if (term.exponent > 1)
+                if (term.exponent > 1) {
                     equationStream << "^" << term.exponent;
+                }
             }
             isFirstTerm = false;
         }
@@ -240,9 +243,9 @@ void EquationSolver::SolvePolynomial(const std::vector<EquationSolver::Term>& re
     }
     std::vector<Term> sortedTerms = SortTermsByExponent(reducedTerms);
     for (auto it = sortedTerms.begin(); it != sortedTerms.end(); ) {
-        if (it->coefficient == 0)
+        if (it->coefficient == 0) {
             it = sortedTerms.erase(it);
-        else {
+        } else {
             maxExponent = std::max(maxExponent, it->exponent);
             ++it;
         }
@@ -255,16 +258,19 @@ void EquationSolver::SolvePolynomial(const std::vector<EquationSolver::Term>& re
         double b = GetCoefficient(sortedTerms, 1);
         double c = GetCoefficient(sortedTerms, 0);
         std::cout << "Solving quadratic equation: ";
-        if (a != 0)
+        if (a != 0) {
             std::cout << a << "X^2";
+        }
         if (b != 0) {
-            if (a != 0)
+            if (a != 0) {
                 std::cout << (b > 0 ? " + " : " - ");
+            }
             std::cout << std::abs(b) << "X";
         }
         if (c != 0) {
-            if (a != 0 || b != 0)
+            if (a != 0 || b != 0) {
                 std::cout << (c > 0 ? " + " : " - ");
+            }
             std::cout << std::abs(c);
         }
         std::cout << " = 0" << std::endl;
@@ -278,12 +284,12 @@ void EquationSolver::SolvePolynomial(const std::vector<EquationSolver::Term>& re
             std::cout << a << "X";
         }
         if (b != 0) {
-            if (a != 0)
+            if (a != 0) {
                 std::cout << (b > 0 ? " + " : " - ");
+            }
             std::cout << std::abs(b);
         }
-        std::cout << " = 0" << std::endl;
-        if (a == 0) {
+        std::cout << " = 0" << std::endl;        if (a == 0) {
             if (b == 0)
                 std::cout << "The equation has infinitely many solutions." << std::endl;
             else
