@@ -176,10 +176,10 @@ std::string EquationSolver::WriteReducedEquation(const std::vector<Term>& reduce
     for (const Term& term : sortedTerms) {
         if (term.coefficient != 0) {
             allCoefficientsZero = false;
-            if (term.coefficient > 0)
+            if (term.coefficient > 0) {
                 if (!isFirstTerm)
                     equationStream << " + ";
-            else {
+            } else {
                 if (!isFirstTerm)
                     equationStream << " ";
                 equationStream << "- ";
