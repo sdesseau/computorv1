@@ -133,10 +133,11 @@ std::vector<EquationSolver::Term> EquationSolver::ReduceTerms(std::vector<Term>&
     std::cout << "Equation: ";
     WriteEquation(updatedTerms);
     std::cout << std::endl;
+    parsedTerms = ReduceVector(parsedTerms);
     updatedTerms = ReduceVector(updatedTerms);
     #if STEPS
         std::cout << "Equation Reduced Intermediaire Step: ";
-        WriteEquation(updatedTerms);
+        WriteEquation(parsedTerms);
         std::cout << std::endl;
     #endif
     while (isThereRight(parsedTerms)) {

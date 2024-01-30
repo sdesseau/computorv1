@@ -14,16 +14,45 @@ void runTests() {
     std::string string = "";
     std::cout << "\033[1;32m" << "TESTING COMPUTORV1" << "\033[0m" << std::endl << std::endl;
 
+    // Tests from the subject
+    
+    string = "5 * X^0 + 4 * X^1 - 9.3 * X^2 = 1 * X^0";
+    std::cout << "\033[1;33m" << "Test Subject Number 0: " << string << "\033[0m" << std::endl;
+    EquationSolver SolverSubject0(string);
+    std::vector<EquationSolver::Term> parsedTermsSubject0 = SolverSubject0.ParseInput();
+    std::vector<EquationSolver::Term> reducedTermsSubject0 = SolverSubject0.ReduceTerms(parsedTermsSubject0);
+    std::cout << "Equation Reduced: " << SolverSubject0.WriteReducedEquation(reducedTermsSubject0) << std::endl;
+    SolverSubject0.SolvePolynomial(reducedTermsSubject0);   
+    printResult(reducedTermsSubject0.size() == 3, "Test Subject 0 - Correct number of terms after reduction: 3");
+    
+    string = "5 * X^0 + 4 * X^1 = 4 * X^0";
+    std::cout << "\033[1;33m" << "Test Subject Number 1: " << string << "\033[0m" << std::endl;
+    EquationSolver SolverSubject1(string);
+    std::vector<EquationSolver::Term> parsedTermsSubject1 = SolverSubject1.ParseInput();
+    std::vector<EquationSolver::Term> reducedTermsSubject1 = SolverSubject1.ReduceTerms(parsedTermsSubject1);
+    std::cout << "Equation Reduced: " << SolverSubject1.WriteReducedEquation(reducedTermsSubject1) << std::endl;
+    SolverSubject1.SolvePolynomial(reducedTermsSubject1);   
+    printResult(reducedTermsSubject1.size() == 2, "Test Subject 1 - Correct number of terms after reduction: 2");
+    
+    string = "8 * X^0 - 6 * X^1 + 0 * X^2 - 5.6 * X^3 = 3 * X^0";
+    std::cout << "\033[1;33m" << "Test Subject Number 2: " << string << "\033[0m" << std::endl;
+    EquationSolver SolverSubject2(string);
+    std::vector<EquationSolver::Term> parsedTermsSubject2 = SolverSubject2.ParseInput();
+    std::vector<EquationSolver::Term> reducedTermsSubject2 = SolverSubject2.ReduceTerms(parsedTermsSubject2);
+    std::cout << "Equation Reduced: " << SolverSubject2.WriteReducedEquation(reducedTermsSubject2) << std::endl;
+    SolverSubject2.SolvePolynomial(reducedTermsSubject2);   
+    printResult(reducedTermsSubject2.size() == 3, "Test Subject 2 - Correct number of terms after reduction: 3");
+
     // Test 0: Parsing Test
     string = "---2x^2+5.127-12xX + 2X 0000000000001212XX      +++ -          -10 = -1212xx  ****2 - 12.03x^2                ";
     std::cout << "\033[1;33m" << "Test Number 0: " << string << "\033[0m" << std::endl;
-    EquationSolver Solver(string);
-    std::vector<EquationSolver::Term> parsedTerms = Solver.ParseInput();
-    std::vector<EquationSolver::Term> reducedTerms = Solver.ReduceTerms(parsedTerms);
-    std::cout << "Equation Reduced: " << Solver.WriteReducedEquation(reducedTerms) << std::endl;
-    Solver.SolvePolynomial(reducedTerms);   
-    printResult(reducedTerms.size() == 3, "Test 0 - Correct number of terms after reduction: 3");
-    
+    EquationSolver Solver0(string);
+    std::vector<EquationSolver::Term> parsedTerms0 = Solver0.ParseInput();
+    std::vector<EquationSolver::Term> reducedTerms0 = Solver0.ReduceTerms(parsedTerms0);
+    std::cout << "Equation Reduced: " << Solver0.WriteReducedEquation(reducedTerms0) << std::endl;
+    Solver0.SolvePolynomial(reducedTerms0);   
+    printResult(reducedTerms0.size() == 3, "Test 0 - Correct number of terms after reduction: 3");
+
     // Test 1: Quadratic equation
     string = "2X^2 + 3X + 1 = X^2 + 5X + 2";
     std::cout << "\033[1;33m" << "Test Number 1: " << string << "\033[0m" << std::endl;
@@ -95,7 +124,7 @@ void runTests() {
     printResult(reducedTerms7.size() == 0, "Test 7 - Correct number of terms after reduction: 0");
 
     // Test 8: Equation with valid spaces
-    string = " 2 X^2 + 3X + 1 = X^2 + 5X + 2 ";
+    string = " 2X^2 + 9X + 6 = X^2 + 8X + 2 ";
     std::cout << "\033[1;33m" << "Test Number 8: " << string << "\033[0m" << std::endl;
     EquationSolver Solver8(string);
     std::vector<EquationSolver::Term> parsedTerms8 = Solver8.ParseInput();
@@ -105,7 +134,7 @@ void runTests() {
     printResult(reducedTerms8.size() == 3, "Test 8 - Correct number of terms after reduction: 3");
 
     // Test 9: Equation with invalid spaces
-    string = "2X^2 + 3 X + 1 = X^2 + 5X + 2";
+    string = "2             X^2 + 9          X + 6 = X^2         + 8          X        +            2";
     std::cout << "\033[1;33m" << "Test Number 9: " << string << "\033[0m" << std::endl;
     EquationSolver Solver9(string);
     std::vector<EquationSolver::Term> parsedTerms9 = Solver9.ParseInput();
@@ -129,7 +158,7 @@ void runTests() {
     printResult(allCoefficientsZero, "Test 10 - All coefficients canceled out");
 
     // Test 11: Equation with leading zeros in coefficients
-    string = "002X^2 + 003X + 001 = X^2 + 5X + 2";
+    string = "002X^2 + 00003X + 00001 = X^2 + 5X + 2";
     std::cout << "\033[1;33m" << "Test Number 11: " << string << "\033[0m" << std::endl;
     EquationSolver Solver11(string);
     std::vector<EquationSolver::Term> parsedTerms11 = Solver11.ParseInput();

@@ -9,7 +9,7 @@
 #include <cmath>
 #include <complex>
 
-#define STEPS 0
+#define STEPS 1
 
 class EquationSolver {
 public:
