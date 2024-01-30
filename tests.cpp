@@ -123,25 +123,25 @@ void runTests() {
     Solver7.SolvePolynomial(reducedTerms7);   
     printResult(reducedTerms7.size() == 0, "Test 7 - Correct number of terms after reduction: 0");
 
-    // Test 8: Equation with valid spaces
-    string = " 2X^2 + 9X + 6 = X^2 + 8X + 2 ";
+    // Test 8: Equation with a lot of additions degree 1
+    string = "2x + 3x - 1x + 7x + 9x = 12x - 11x + 14x -10x";
     std::cout << "\033[1;33m" << "Test Number 8: " << string << "\033[0m" << std::endl;
     EquationSolver Solver8(string);
     std::vector<EquationSolver::Term> parsedTerms8 = Solver8.ParseInput();
     std::vector<EquationSolver::Term> reducedTerms8 = Solver8.ReduceTerms(parsedTerms8);
     std::cout << "Equation Reduced: " << Solver8.WriteReducedEquation(reducedTerms8) << std::endl;
     Solver8.SolvePolynomial(reducedTerms8);   
-    printResult(reducedTerms8.size() == 3, "Test 8 - Correct number of terms after reduction: 3");
+    printResult(reducedTerms8.size() == 1, "Test 8 - Correct number of terms after reduction: 1");
 
-    // Test 9: Equation with invalid spaces
-    string = "2             X^2 + 9          X + 6 = X^2         + 8          X        +            2";
+    // Test 9: Equation with a lot of additions degree 2
+    string = "2x^2 + 3x^2 - 1x^2 + 7x^2 + 9x^2 = 12x^2 - 11x^2 + 14x^2 -10x^2";
     std::cout << "\033[1;33m" << "Test Number 9: " << string << "\033[0m" << std::endl;
     EquationSolver Solver9(string);
     std::vector<EquationSolver::Term> parsedTerms9 = Solver9.ParseInput();
     std::vector<EquationSolver::Term> reducedTerms9 = Solver9.ReduceTerms(parsedTerms9);
     std::cout << "Equation Reduced: " << Solver9.WriteReducedEquation(reducedTerms9) << std::endl;
     Solver9.SolvePolynomial(reducedTerms9);   
-    printResult(reducedTerms9.size() == 3, "Test 9 - Correct number of terms after reduction: 3");
+    printResult(reducedTerms9.size() == 1, "Test 9 - Correct number of terms after reduction: 1");
 
     // Test 10: Quadratic equation with all coefficients canceled out
     string = "X^2 + 2X + 1 = X^2 + 2X + 1";

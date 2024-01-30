@@ -134,11 +134,13 @@ std::vector<EquationSolver::Term> EquationSolver::ReduceTerms(std::vector<Term>&
     WriteEquation(updatedTerms);
     std::cout << std::endl;
     parsedTerms = ReduceVector(parsedTerms);
-    updatedTerms = ReduceVector(updatedTerms);
     #if STEPS
-        std::cout << "Equation Reduced Intermediaire Step: ";
-        WriteEquation(parsedTerms);
-        std::cout << std::endl;
+        if (updatedTerms != ReduceVector(updatedTerms)) {
+            updatedTerms = ReduceVector(updatedTerms);
+            std::cout << "Equation Reduced Intermediaire Step: ";
+            WriteEquation(updatedTerms);
+            std::cout << std::endl;
+        }
     #endif
     while (isThereRight(parsedTerms)) {
         for (const auto& term : parsedTerms) {
@@ -216,6 +218,8 @@ void EquationSolver::SolveQuadratic(double a, double b, double c) {
     } 
     else if (discriminant == 0) {
         double root = -b / (2 * a);
+        if (root == -0)
+            root = 0;
         std::cout << "Discriminant is zero, one real root:" << std::endl;
         std::cout << "Root: " << root << std::endl;
     } 
