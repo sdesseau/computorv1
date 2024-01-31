@@ -10,10 +10,8 @@ std::vector<EquationSolver::Term> EquationSolver::ParseInput() {
         if (equation[i]) {
             char ch = equation[i];
             if (isEqualsSign(ch)) {
-                if (isRightSide == true) {
-                    std::cout << "Error: Must have only one '=' character !" << std::endl;
-                    exit(7);
-                }
+                if (isRightSide == true)
+                    throw std::runtime_error("Error: Must have only one '=' character !");
                 processEqualsSign(parsedTerms);
                 isRightSide = true;
             } else if (isOperator(ch))
@@ -33,8 +31,7 @@ std::vector<EquationSolver::Term> EquationSolver::ParseInput() {
             } else if (ch != ' ' && ch != '*') {
                 if (equation[i - 1] == '\0')
                     break;
-                std::cout << "Error: Unknown Character: " << ch << std::endl;
-                exit(3);
+                throw std::runtime_error("Error: Unknown Character: " + std::string(1, ch));
             }
             if (!equation[i])
                 break;
