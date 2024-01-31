@@ -107,6 +107,8 @@ std::vector<EquationSolver::Term> EquationSolver::ReduceVector(const std::vector
                 found = true;
                 break;
             }
+            if (std::isnan(reducedTerm.coefficient) || std::isinf(reducedTerm.coefficient))
+                throw std::runtime_error("Error: Added Coeff is NaN or +/-Inf");
         }
         if (!found)
             reducedTerms.push_back(term);
