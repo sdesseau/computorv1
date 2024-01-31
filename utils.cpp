@@ -67,6 +67,11 @@ void EquationSolver::addTermToList(std::vector<Term>& parsedTerms) {
     bool right = false;
     if (isRightSide)
         right = true;
+    if (coefficient > (long double)DBL_MAX || coefficient < (long double)DBL_MIN)
+    {
+        std::cout << "Error: Coeff Too Big" << std::endl;
+        exit(9); 
+    }
     parsedTerms.push_back({coefficient, exponent, right});
     resetVariables();
 }

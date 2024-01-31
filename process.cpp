@@ -53,6 +53,10 @@ int EquationSolver::processExponentIndicator(const std::string& equation, int i)
         exit(4);
     }
     while (equation[i] && std::isdigit(equation[i])) {
+        if (exponent > (2147483647 - (equation[i] - '0')) / 10) {
+            std::cout << "Error: Exponent out of range for signed 32-bit integer." << std::endl;
+            exit(9);
+        }
         exponent = exponent * 10 + (equation[i] - '0');
         i++;
         if (equation[i] == '.' || equation[i] == '*') {
