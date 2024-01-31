@@ -79,12 +79,14 @@ int EquationSolver::processDigit(const std::string& equation, int i) {
                 if (equation[i] == '.')
                     throw std::runtime_error("Error: Multiple Decimal Point");
                 else if (!std::isdigit(equation[i]))
-                    throw std::runtime_error("Error: Bad Coeff Character: " + std::to_string(equation[i]));
+                    throw std::runtime_error("Error: Bad Coeff Character: " + std::string(1, equation[i]));
                 coefficient += (equation[i] - '0') * decimalMultiplier;
                 decimalMultiplier *= 0.1;
                 i++;
             }
             break;
+        } else if (!std::isdigit(equation[i])) {
+            throw std::runtime_error("Error: Bad Coeff Character: " + std::string(1, equation[i]));
         }
         coefficient = coefficient * 10 + (equation[i] - '0');
         i++;
