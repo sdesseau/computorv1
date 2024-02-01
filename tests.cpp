@@ -217,9 +217,53 @@ void runTests() {
     Solver16.SolvePolynomial(reducedTerms16);   
     printResult(reducedTerms16.size() == 3, "Test 16 - Correct number of terms after reduction: 3");
 
+    // Test 17: Equation with multiple exponent 
+    string = "2X^2^2^2^2^2 = 0";
+    std::cout << "\033[1;33m" << "Test Number 17: " << string << "\033[0m" << std::endl;
+    EquationSolver Solver2p2(string);
+    std::vector<EquationSolver::Term> parsedTerms2p2 = Solver2p2.ParseInput();
+    std::vector<EquationSolver::Term> reducedTerms2p2 = Solver2p2.ReduceTerms(parsedTerms2p2);
+    std::cout << "Equation Reduced: " << Solver2p2.WriteReducedEquation(reducedTerms2p2) << std::endl;
+    Solver2p2.SolvePolynomial(reducedTerms2p2);   
+    printResult(reducedTerms2p2.size() == 1, "Test 17 - Correct number of terms after reduction: 1");
+
+        // Test 18: Equation with inf - inf
+    string = "-1797693134862315700000000000000000000000000000000000000000000000000\
+00000000000000000000000000000000000000000000000000000000000000000000\
+00000000000000000000000000000000000000000000000000000000000000000000\
+00000000000000000000000000000000000000000000000000000000000000000000\
+00000000000000000000000000000000000000.0000000000000000 - 1797693134862315700000000000000000000000000000000000000000000000000\
+00000000000000000000000000000000000000000000000000000000000000000000\
+00000000000000000000000000000000000000000000000000000000000000000000\
+00000000000000000000000000000000000000000000000000000000000000000000\
+00000000000000000000000000000000000000.0000000000000000";
+    std::cout << "\033[1;33m" << "Test Number 18: " << string << "\033[0m" << std::endl;
+    EquationSolver Solver2p3(string);
+    std::vector<EquationSolver::Term> parsedTerms2p3 = Solver2p3.ParseInput();
+    std::vector<EquationSolver::Term> reducedTerms2p3 = Solver2p3.ReduceTerms(parsedTerms2p3);
+    std::cout << "Equation Reduced: " << Solver2p3.WriteReducedEquation(reducedTerms2p3) << std::endl;
+    Solver2p3.SolvePolynomial(reducedTerms2p3);   
+    printResult(reducedTerms2p3.size() == 1, "Test 18 - Correct number of terms after reduction: 1");
 
     // Test with special outputs //
 
+//     // Test 17: Equation with max_double
+//     string = "-1797693134862315700000000000000000000000000000000000000000000000000\
+// 00000000000000000000000000000000000000000000000000000000000000000000\
+// 00000000000000000000000000000000000000000000000000000000000000000000\
+// 00000000000000000000000000000000000000000000000000000000000000000000\
+// 000000000000000000000000000000000000000.0000000000000000 - -1797693134862315700000000000000000000000000000000000000000000000000\
+// 00000000000000000000000000000000000000000000000000000000000000000000\
+// 00000000000000000000000000000000000000000000000000000000000000000000\
+// 00000000000000000000000000000000000000000000000000000000000000000000\
+// 000000000000000000000000000000000000000.0000000000000000";
+//     std::cout << "\033[1;33m" << "Test Number 17: " << string << "\033[0m" << std::endl;
+//     EquationSolver Solver2p1(string);
+//     std::vector<EquationSolver::Term> parsedTerms2p1 = Solver2p1.ParseInput();
+//     std::vector<EquationSolver::Term> reducedTerms2p1 = Solver2p1.ReduceTerms(parsedTerms2p1);
+//     std::cout << "Equation Reduced: " << Solver2p1.WriteReducedEquation(reducedTerms2p1) << std::endl;
+//     Solver2p1.SolvePolynomial(reducedTerms2p1);   
+//     printResult(reducedTerms2p1.size() == 3, "Test 17 - Correct number of terms after reduction: 3");
 
     // // Test 17: Equation with invalid exponent format -> Error: Unknown Exponent Character: a
         // string = "2X^2 + 3X^a + 1 = X^2 + 5X + 2";

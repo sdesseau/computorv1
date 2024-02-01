@@ -74,6 +74,8 @@ private:
 
     bool canProcessExponent(char c);
 
+    int readExponent(const std::string& equation, int i);
+
     // utils.cpp //
 
     bool isOperator(char ch) const;

@@ -41,23 +41,30 @@ int EquationSolver::processVariable(const std::string& equation, int i) {
 }
 
 int EquationSolver::processExponentIndicator(const std::string& equation, int i) {
+    int nextExponent = 0;
+    
     i++;
     if (equation[i] == '-')
         throw std::runtime_error("Error: By definition, a polynomial has non-negative integer exponents of variables");
     while (isspace(equation[i]))
         i++;
     if (!std::isdigit(equation[i]))
-            throw std::runtime_error("Error: Unknown Exponent Character: ");
+            throw std::runtime_error("Error: Unknown Exponent Character: " + std::string(1, equation[i]));
     while (equation[i] && std::isdigit(equation[i])) {
-        if (exponent > (2147483647 - (equation[i] - '0')) / 10)
+        if (nextExponent > (2147483647 - (equation[i] - '0')) / 10)
             throw std::runtime_error("Error: Exponent out of range for signed 32-bit integer.");
-        exponent = exponent * 10 + (equation[i] - '0');
+        nextExponent = nextExponent * 10 + (equation[i] - '0');
         i++;
         if (equation[i] == '.' || equation[i] == '*')
             throw std::runtime_error("Error: Sorry, not implemented yet !");
     }
     if (equation[i] && !canProcessExponent(equation[i]))
         throw std::runtime_error("Unknown Exponent Character: " + std::string(1, equation[i]));
+
+    if (exponent != 0)
+        exponent *= nextExponent;
+    else
+        exponent = nextExponent;
 
     return (i);
 }
@@ -109,7 +116,7 @@ bool EquationSolver::canProcess(char c) {
 }
 
 bool EquationSolver::canProcessExponent(char c) {
-    if (c != ' ' && c != '+' && c != '-' && c != '=')
+    if (c != ' ' && c != '+' && c != '-' && c != '=' && c != '^')
         return (false);
     return (true);
 }
