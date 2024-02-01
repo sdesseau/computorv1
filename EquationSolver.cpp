@@ -6,6 +6,8 @@ EquationSolver::EquationSolver(const std::string& equation)
       isRightSide(false), NextCoefficient('+') {}
 
 std::vector<EquationSolver::Term> EquationSolver::ParseInput() {
+    if (!equation[0])
+        throw std::runtime_error("Error: Equation is empty");
     for (int i = 0; equation[i]; i++) {
         if (equation[i]) {
             char ch = equation[i];
@@ -29,7 +31,7 @@ std::vector<EquationSolver::Term> EquationSolver::ParseInput() {
                if (rewind(equation[i]))
                     i--;
             } else if (ch != ' ' && ch != '*') {
-                if (equation[i - 1] == '\0')
+                if (i != 0 && equation[i - 1] == '\0')
                     break;
                 throw std::runtime_error("Error: Unknown Character: " + std::string(1, ch));
             }
