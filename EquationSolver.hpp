@@ -10,7 +10,7 @@
 #include <complex>
 #include <cfloat>
 
-#define STEPS 1
+#define STEPS 0
 
 class EquationSolver {
 public:
